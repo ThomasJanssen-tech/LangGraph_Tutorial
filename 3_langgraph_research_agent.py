@@ -36,7 +36,7 @@ class ResearchRequired(BaseModel):
 
 class SearchQuery(BaseModel):
     query: str = Field(
-        description="The Google search query to be used for research."
+        description="The Google search query to be used for research. Be aware that you can only search for text, not images or other media."
     )
 
 class ResearchResults(BaseModel):
@@ -68,10 +68,6 @@ def decide_research_required(state):
         [sys_message] + state['messages']
     )
 
-    print("== > Response < ==")
-
-    print(response)
-
     if response['is_required']:
         return {"next":"write_search_query"}
     else:
@@ -86,29 +82,16 @@ def write_search_query(state):
         [sys_message] + state['messages']
     )
 
-    print("RESPONSE:")
-    print(response)
-
     return {"research_query": response['query']}
 
 def perform_research(state):
     search_results = google_search(state['research_query'])
 
-    print("== > Search Results < ==")
-    print(search_results)
-
     sys_message = SystemMessage(content="You receive the HTML title and snippet of the top search results from Google search. Create a summary with all the information / facts you can find. DO NOT comment on the HTML / Javascript code but summarize the text which is included in the HTML (the information)")
 
     usr_message = HumanMessage(content=f"The following are the search results obtained from Google search: {search_results}.")
 
-    print("USER MESSAGE:")
-    print(usr_message)
-
     response = llm.invoke([sys_message] + [usr_message])
-
-    print("== > Research Results < ==")
-
-    print(response.content)
 
     return {"research_results": response.content}
 
