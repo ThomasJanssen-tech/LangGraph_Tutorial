@@ -13,7 +13,7 @@ def google_search(query):
         "Content-Type": "application/json"
     }
     data = {
-        "zone": "serp_api3",
+        "zone": os.getenv("BRIGHTDATA_SERP_ZONE"),
         "url": "https://www.google.com/search?q="+query.replace(" ", "+"),
         "format": "raw"
     }
