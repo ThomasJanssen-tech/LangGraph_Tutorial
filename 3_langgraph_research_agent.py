@@ -14,7 +14,7 @@ load_dotenv()
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-st.title("Chatbot")
+st.title("Research Agent with LangGraph")
 
 # Display the chat history.
 for message in st.session_state.messages:
